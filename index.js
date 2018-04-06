@@ -4,7 +4,7 @@ const fs = require('fs')
 const request = require('axios')
 const bodyParser = require('body-parser')
 const logger = require('morgan')
-const xFrameOptions = require('x-frame-options')
+// const xFrameOptions = require('x-frame-options')
 const port = process.env.PORT || 3001
 
 app.use(bodyParser.json({ type: 'application/json' }))
@@ -13,7 +13,7 @@ app.use(bodyParser.text())
 
 app.use(logger('combined'))
 
-app.use(xFrameOptions())
+// app.use(xFrameOptions())
 
 app.get('/', (req, res) => {
   console.log('we wanna get something', req)
