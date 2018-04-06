@@ -40,7 +40,7 @@ const checkForTimestamp = (req, res, next) => {
       .status(500)
       .send(
         `Sorry, we think your timestamp is too old, but the stupid fucking LTI course thinks that a lot of timestamps from Jan 18, 1970 are valid, so you be the judge. Here is your timestamp in date format: ${new Date(
-          req.body.oauth_timestamp
+          Number(req.body.oauth_timestamp)
         )}`
       )
   } else {
