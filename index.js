@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
   res.send('well hello, world')
 })
 
-app.post('*', checkForNonce, (req, res) => {
+app.post('*', checkForNonce, checkForTimestamp, (req, res) => {
   console.log('somebody is posting', req)
   // all of the LTI bullshit is going to come through the body on posts when the url is loaded within an iframe
   const { body } = req
