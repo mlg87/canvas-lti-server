@@ -15,13 +15,31 @@ app.use(logger('combined'))
 
 // app.use(xFrameOptions())
 
+// TODO find a library to do this for me
+let nonces = []
+const checkForNonce = (req, res, next) => {
+  if (!req.body.oauth_nonce) {
+    return res
+      .status(500)
+      .send('Sorry, there was no oauth_nonce in your request. Contact your sys admin')
+  } else if (nonces.includes(req.body.oauth_nonce)) {
+    return res
+      .status(500)
+      .send('Sorry, you sent an out of date oauth_nonce. Contact your sys admin')
+  } else {
+    nonces.push(req.body.oauth_nonce)
+    next()
+  }
+}
+
 app.get('/', (req, res) => {
   console.log('we wanna get something', req)
   res.send('well hello, world')
 })
 
-app.post('*', (req, res) => {
+app.post('*', checkForNonce, (req, res) => {
   console.log('somebody is posting', req)
+  // all of the LTI bullshit is going to come through the body on posts when the url is loaded within an iframe
   const { body } = req
   res.status(200).json({ body })
 })
