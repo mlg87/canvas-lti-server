@@ -32,6 +32,16 @@ const checkForNonce = (req, res, next) => {
   }
 }
 
+const checkForTimestamp = (req, res, next) => {
+  if (!req.body.oauth_timestamp) {
+    return res.status(500).send('Sorry, no oauth_timestamp on your req')
+  } else if (Date.now() - req.body.oauth_timestamp > 100000) {
+    return res.status(500).send('Sorry, your oauth_timestamp is too old')
+  } else {
+    next()
+  }
+}
+
 app.get('/', (req, res) => {
   console.log('we wanna get something', req)
   res.send('well hello, world')
