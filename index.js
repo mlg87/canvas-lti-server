@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 
 app.post('*', (req, res) => {
   console.log('somebody is posting', req)
-  res.send('Request Body: ', req.body)
+  res.status(200).send('Request Body: ', req.body)
 })
 
 app.listen(port, () => console.log(`listening on port ${port}`))
