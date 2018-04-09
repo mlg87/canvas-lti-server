@@ -65,7 +65,10 @@ app.get('/', (req, res) => {
 })
 
 app.post('*', checkOAuthNonce, checkOAuthTimestamp, (req, res) => {
-  console.log('somebody is posting', req)
+  // console.log('somebody is posting', req)
+  console.log('BODY', req.body)
+  console.log('QUERY', req.query)
+  console.log('PARAMS', req.params)
   // all of the LTI bullshit is going to come through the body on posts when the url is loaded within an iframe
   const { body } = req
   res.status(200).json({ body })
