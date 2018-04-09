@@ -4,6 +4,7 @@ const fs = require('fs')
 const request = require('axios')
 const bodyParser = require('body-parser')
 const logger = require('morgan')
+const oauthSignature = require('oauth-signature')
 // const xFrameOptions = require('x-frame-options')
 const port = process.env.PORT || 3001
 
@@ -70,9 +71,34 @@ app.post('*', checkOAuthNonce, checkOAuthTimestamp, (req, res) => {
   console.log('QUERY', req.query)
   console.log('PARAMS', req.params)
   console.log('HEADERS', req.headers)
+  // oauth sig shit
+  const {
+    oauth_consumer_key,
+    oauth_signature_method,
+    oauth_nonce,
+    oauth_timestamp,
+    oauth_version,
+    oauth_signature
+  } = req.body
+  const httpMethod = 'POST'
+  const url = 'https://learn-lti.herokuapp.com'
+  const params = {
+    oauth_consumer_key,
+    // missing a value for oauth_token
+    // apparently supposed to omit oauth_nonce
+    oauth_timestamp,
+    oauth_signature_method,
+    oauth_version
+  }
+  // this value is given in the lti course
+  const consumerSecret = '435e733b44385d728e43b30d778ec00d'
+  const encodedSignature = oauthSignature.generate(httpMethod, url, params, consumerSecret)
+  const signature = oauthSignature.generate(httpMethod, url, params, consumerSecret, null, {
+    encodeSignature: false
+  })
   // all of the LTI bullshit is going to come through the body on posts when the url is loaded within an iframe
-  const { body } = req
-  res.status(200).json({ body })
+  // const { body } = req
+  res.status(200).json({ signature_sent_from_client: oauth_signature, encodedSignature, signature })
 })
 
 app.listen(port, () => console.log(`listening on port ${port}`))
