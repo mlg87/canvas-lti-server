@@ -97,8 +97,10 @@ app.post('*', checkOAuthNonce, checkOAuthTimestamp, (req, res) => {
     encodeSignature: false
   })
   // all of the LTI bullshit is going to come through the body on posts when the url is loaded within an iframe
-  // const { body } = req
-  res.status(200).json({ signature_sent_from_client: oauth_signature, encodedSignature, signature })
+  const { body } = req
+  res
+    .status(200)
+    .json({ signature_sent_from_client: oauth_signature, encodedSignature, signature, body })
 })
 
 app.listen(port, () => console.log(`listening on port ${port}`))
