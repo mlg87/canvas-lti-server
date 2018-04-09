@@ -32,17 +32,19 @@ const checkOAuthNonce = (req, res, next) => {
   }
 }
 
+// NOTE this needs to be fixed for any production app, desperately need to find a library for the OAuth
+// else if (Date.now() - req.body.oauth_timestamp > 100000) {
+//     return res
+//       .status(500)
+//       .send(
+//         `Sorry, we think your timestamp is too old, but the stupid fucking LTI course thinks that a lot of timestamps from Jan 18, 1970 are valid, so you be the judge. Here is your timestamp in date format: ${new Date(
+//           Number(req.body.oauth_timestamp)
+//         )}`
+//       )
+//   }
 const checkOAuthTimestamp = (req, res, next) => {
   if (!req.body.oauth_timestamp || req.body.oauth_timestamp === '') {
     return res.status(500).send('Sorry, no oauth_timestamp on your req')
-  } else if (Date.now() - req.body.oauth_timestamp > 100000) {
-    return res
-      .status(500)
-      .send(
-        `Sorry, we think your timestamp is too old, but the stupid fucking LTI course thinks that a lot of timestamps from Jan 18, 1970 are valid, so you be the judge. Here is your timestamp in date format: ${new Date(
-          Number(req.body.oauth_timestamp)
-        )}`
-      )
   } else {
     next()
   }
