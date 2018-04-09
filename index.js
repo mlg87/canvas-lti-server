@@ -81,7 +81,8 @@ app.post('*', checkOAuthNonce, checkOAuthTimestamp, (req, res) => {
     oauth_signature
   } = req.body
   const httpMethod = 'POST'
-  const url = 'https://learn-lti.herokuapp.com'
+  // const url = 'https://learn-lti.herokuapp.com'
+  const url = 'https://damp-everglades-54548.herokuapp.com/'
   const params = {
     oauth_consumer_key,
     // missing a value for oauth_token
