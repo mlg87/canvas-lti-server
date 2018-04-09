@@ -17,7 +17,7 @@ app.use(logger('combined'))
 
 // TODO find a library to do this for me
 let nonces = []
-const checkForNonce = (req, res, next) => {
+const checkOAuthNonce = (req, res, next) => {
   if (!req.body.oauth_nonce) {
     return res
       .status(500)
@@ -32,7 +32,7 @@ const checkForNonce = (req, res, next) => {
   }
 }
 
-const checkForTimestamp = (req, res, next) => {
+const checkOAuthTimestamp = (req, res, next) => {
   if (!req.body.oauth_timestamp || req.body.oauth_timestamp === '') {
     return res.status(500).send('Sorry, no oauth_timestamp on your req')
   } else if (Date.now() - req.body.oauth_timestamp > 100000) {
@@ -48,12 +48,21 @@ const checkForTimestamp = (req, res, next) => {
   }
 }
 
+const checkOAuthSignature = (req, res, next) => {
+  if (!req.body.oauth_signature) {
+    return res.status(500).send('Sorry, no oauth_signature on your req')
+  } else {
+    console.log('OAUTH_SIGNATURE', req.body.oauth_signature)
+    next()
+  }
+}
+
 app.get('/', (req, res) => {
   console.log('we wanna get something', req)
   res.send('well hello, world')
 })
 
-app.post('*', checkForNonce, checkForTimestamp, (req, res) => {
+app.post('*', checkOAuthNonce, checkOAuthTimestamp, (req, res) => {
   console.log('somebody is posting', req)
   // all of the LTI bullshit is going to come through the body on posts when the url is loaded within an iframe
   const { body } = req
